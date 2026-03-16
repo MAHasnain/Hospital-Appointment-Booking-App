@@ -1,7 +1,6 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import doctorRouter from "./routes/doctor.route.js";
 import morganMiddleware from "../logger/morgan.logger.js";
 import morgan from "morgan";
 import logger from "../logger/winston.logger.js";
@@ -30,6 +29,17 @@ app.use(
     })
 );
 
-app.use("/api/v1", doctorRouter)
+// Routes
+import doctorRouter from "./routes/doctor.route.js";
+import appointmentRouter from "./routes/appointment.route.js";
+import authRouter from "./routes/auth.route.js";
+import scheduleRouter from "./routes/schedule.route.js";
+import statsRouter from "./routes/stats.route.js";
+
+app.use("/api/v1/doctors", doctorRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/appointment", appointmentRouter);
+app.use("/api/v1/schedule", scheduleRouter);
+app.use("/api/v1/stats", statsRouter);
 
 export default app;
