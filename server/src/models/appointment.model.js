@@ -17,7 +17,23 @@ const appointmentSchema = new Schema({
         type: String,
         required: true,
         trim: true
-    }
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    timeSlot: {
+        type: String,
+        required: true
+    },
+    appointmentType: {
+        type: String,
+    },
+    status: {
+        type: String,
+        enum: ["pending", "confirmed", "completed", "cancelled"]
+    },
+    
 });
 
 const Appointment = model("Appointment", appointmentSchema);

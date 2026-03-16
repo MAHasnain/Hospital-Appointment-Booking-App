@@ -49,6 +49,12 @@ const patientSchema = new Schema({
     avatar: {
         type: String
     },
+
+    role: "patient",
+    emergencyContact: {
+        type: String,
+
+    },
     password: {
         type: String,
         required: true
