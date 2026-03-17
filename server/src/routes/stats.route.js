@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { getDoctorStats, getPatientStats } from "../controller/stats.controller.js";
 
 const router = Router();
 

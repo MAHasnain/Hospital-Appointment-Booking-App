@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createSchedule, editSchedule, getScheduleByDrId } from "../controller/schedule.controller.js";
 
 const router = Router();
 

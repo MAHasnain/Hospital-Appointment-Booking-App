@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createAppointment, deleteAppointment, editAppointmentStatus, getAllMyAppointments, getPatientAppointments } from "../controller/appointment.controller.js";
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router
     .get(getAllMyAppointments)
 
 router
-    .route("/doctor?date=today")
+    .route("/doctor")
     .get(getPatientAppointments)
 
 router
