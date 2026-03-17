@@ -1,16 +1,17 @@
 import { model, Schema } from "mongoose";
 
 const scheduleSchema = new Schema({
+    doctor: {
+        type: Schema.Types.ObjectId,
+        ref: "Doctor"
+    },
     availableSlots: {
         type: String,
 
     },
-    dayOfWeek: {
-        type: Number
-    },
-    doctor: {
-        type: Schema.Types.ObjectId,
-        ref: "Doctor"
+    workingDays: {
+        type: [String],
+
     },
     startTime: {
         type: String,
@@ -19,6 +20,15 @@ const scheduleSchema = new Schema({
     endTime: {
         type: String,
         required: true
+    },
+    isActive: {
+        type: String
+    },
+    slotDuration: {
+        type: Number
+    },
+    breakDuration: {
+        type: Number
     }
 });
 

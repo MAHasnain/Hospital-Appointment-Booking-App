@@ -1,4 +1,6 @@
 import { model, Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // joi validation schema
 /* const patientJoiSchema = joi.object({
@@ -66,5 +68,36 @@ const patientSchema = new Schema({
 }, { timestamps: true });
 
 const Patient = model("Patient", patientSchema);
+
+patientSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
+}
+
+patientSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.email,
+            role: this.role
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN
+        }
+    );
+
+}
+
+patientSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN
+        }
+    )
+}
 
 export default Patient;
