@@ -23,6 +23,7 @@ const patientSchema = new Schema({
     },
     username: {
         type: String,
+        match: [/^[a-z0-9_-]+$/, "Username is invalid"],
         lowercase: true,
         trim: true,
         unique: true,
@@ -35,13 +36,17 @@ const patientSchema = new Schema({
     },
     email: {
         type: String,
+        match: [
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            'Enter a valid email address.'
+        ],
         trim: true,
         lowercase: true,
         unique: true,
         required: [true, "email is required"]
     },
     dob: {
-        type: Date,
+        type: String,
         required: true
     },
     address: {
@@ -52,13 +57,20 @@ const patientSchema = new Schema({
         type: String
     },
 
-    role: "patient",
+    role: {
+        type: String,
+        default: "patient"
+    },
     emergencyContact: {
         type: String,
 
     },
     password: {
         type: String,
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            "Enter a strong password"
+        ],
         required: true
     },
     refreshToken: {
@@ -68,6 +80,12 @@ const patientSchema = new Schema({
 }, { timestamps: true });
 
 const Patient = model("Patient", patientSchema);
+
+patientSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+})
 
 patientSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)

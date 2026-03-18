@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { login, register } from "../controller/auth.controller.js";
+import { login, logout, refreshAccessToken, register } from "../controller/auth.controller.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
 router
     .route("/register")
-    .post(register)
+    .post(upload.single("avatar"), register)
 
 router
     .route("/login")
@@ -17,6 +18,6 @@ router
 
 router
     .route("/logout")
-    .post(logoutUser)
+    .post(logout)
 
 export default router
