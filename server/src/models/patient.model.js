@@ -36,6 +36,9 @@ const patientSchema = new Schema({
     },
     email: {
         type: String,
+         lowercase: true,
+        trim: true,
+        unique: true,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             'Enter a valid email address.'
@@ -79,12 +82,11 @@ const patientSchema = new Schema({
 
 }, { timestamps: true });
 
-const Patient = model("Patient", patientSchema);
 
 patientSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+    if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10);
-    next();
+    // next();
 })
 
 patientSchema.methods.isPasswordCorrect = async function (password) {
@@ -103,7 +105,7 @@ patientSchema.methods.generateAccessToken = function () {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN
         }
     );
-
+    
 }
 
 patientSchema.methods.generateRefreshToken = function () {
@@ -118,4 +120,5 @@ patientSchema.methods.generateRefreshToken = function () {
     )
 }
 
+const Patient = model("Patient", patientSchema);
 export default Patient;
