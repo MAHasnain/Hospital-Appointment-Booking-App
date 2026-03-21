@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import morganMiddleware from "../logger/morgan.logger.js";
 import morgan from "morgan";
 import logger from "../logger/winston.logger.js";
@@ -18,6 +19,7 @@ app.use(cors({
 }));
 app.use(express.static("public"));
 app.use(helmet());
+app.use(cookieParser())
 
 // Morgan middleware for logging HTTP requests, integrated with Winston logger
 app.use(morganMiddleware);
