@@ -84,9 +84,9 @@ const registerPatient = asyncHandler(async (req, res) => {
 
 const registerDoctor = asyncHandler(async (req, res) => {
 
-    const { fullName, email, phoneNumber, professionalBio, speciality, hospital, medicalLicense, experience, role } = req.body;
+    const { fullName, email, phoneNumber, professionalBio, speciality, hospital, medicalLicense, experience, password, role } = req.body;
 
-    if ([fullName, email, phoneNumber, speciality, medicalLicense].some(field => field.trim() === "")) {
+    if ([fullName, email, phoneNumber, speciality, medicalLicense, password].some(field => field.trim() === "")) {
         throw new ApiError(400, "All fields are required!");
     };
 
@@ -106,12 +106,17 @@ const registerDoctor = asyncHandler(async (req, res) => {
     };
 
     const doctorData = {
-        fullName, email,
+        fullName,
+        email: email.toLowerCase(),
         avatar: doctorAvatar.url,
-        phoneNumber, professionalBio,
-        speciality, hospital,
-        role, experience,
-        medicalLicense
+        professionalBio,
+        medicalLicense,
+        phoneNumber,
+        speciality,
+        experience,
+        hospital,
+        password,
+        role
     };
 
     const doctor = await Doctor.create(doctorData);
@@ -141,7 +146,7 @@ const generateAccessAndRefreshToken = async (userId, userRole) => {
             doctor.refreshToken = refreshToken;
             await doctor.save({ validateBeforeSave: false })
 
-            return { accessToken, refreshToken };
+            return { refreshToken, accessToken };
 
         } else if (userRole === "patient") {
             // patient tokens generating
@@ -261,6 +266,21 @@ const login = asyncHandler(async (req, res) => {
 
 
 const logout = asyncHandler(async (req, res) => {
+
+    console.log("user", req.user);
+    await Patient.findByIdAndUpdate(req.user, {
+        $set: {
+            refreshToken: ""
+        }
+    }, { new: true });
+
+    const options = { httpOnly: true }
+
+    res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "User logged out."))
 
 })
 

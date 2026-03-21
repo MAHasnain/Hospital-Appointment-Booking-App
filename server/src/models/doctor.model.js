@@ -43,6 +43,14 @@ const doctorSchema = new Schema({
         type: Number,
         default: 0
     },
+    password: {
+        type: String,
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            "Enter a strong password"
+        ],
+        required: true
+    },
     avatar: {
         // Cloudinary URL 
         type: String,
@@ -74,7 +82,7 @@ doctorSchema.methods.generateAccessToken = function () {
             role: this.role
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN }
     )
 }
 
@@ -84,7 +92,7 @@ doctorSchema.methods.generateRefreshToken = function () {
             _id: this._id
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN }
     )
 }
 
