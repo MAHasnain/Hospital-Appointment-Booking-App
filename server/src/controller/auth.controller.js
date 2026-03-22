@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import logger from "../../logger/winston.logger.js";
 import Doctor from "../models/doctor.model.js";
 import Patient from "../models/patient.model.js";
@@ -285,6 +286,89 @@ const logout = asyncHandler(async (req, res) => {
 })
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
+    const incommingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!incommingRefreshToken) {
+        throw new ApiError(401, "Unauthorized request");
+    }
+
+    try {
+        const decodedToken = jwt.verify(incommingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+        console.log(decodedToken);
+
+        if (decodedToken?.role === "patient") {
+            const user = await Patient.findById(decodedToken?._id);
+
+            console.log(user);
+            // validation
+            if (!user) {
+                throw new ApiError(401, "Invalid refresh token")
+            };
+            if (incommingRefreshToken !== user?.refreshToken) {
+                throw new ApiError(401, "Refresh token is expired or used");
+            };
+
+            const options = { httpOnly: true };
+
+            // tokens generating
+            const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshToken(user._id, user.role);
+
+            // replace old refreshToken to newRefreshToken
+            user.refreshToken = newRefreshToken;
+            user.save({ validateBeforeSave: false });
+
+            // return response
+            return res
+                .status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", newRefreshToken, options)
+                .json(
+                    new ApiResponse(200,
+                        { accessToken, refreshToken: newRefreshToken },
+                        "Access token refreshed"
+                    )
+                );
+
+        } else if (decodedToken?.role === "doctor") {
+
+            const user = await Doctor.findById(decodedToken?._id);
+            console.log(user);
+            // validation
+            if (!user) {
+                throw new ApiError(401, "Invalid refresh token")
+            };
+            if (incommingRefreshToken !== user?.refreshToken) {
+                throw new ApiError(401, "Refresh token is expired or used");
+            };
+
+            const options = { httpOnly: true };
+
+            // tokens generating
+            const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshToken(user._id, user.role);
+
+            console.log({ "accessToken": accessToken });
+
+            user.refreshToken = newRefreshToken;
+            user.save({ validateBeforeSave: false });
+
+            return res
+                .status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", newRefreshToken, options)
+                .json(
+                    new ApiResponse(
+                        200,
+                        { accessToken, refreshToken: newRefreshToken },
+                        "Access token refreshed"
+                    )
+                )
+        }
+
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(401, error?.message, "Invalid refresh token");
+
+    }
 
 })
 

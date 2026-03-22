@@ -19,7 +19,7 @@ router
 // Secured routes
 router
     .route("/refresh-token")
-    .post(verifyJWT, refreshAccessToken)
+    .post(refreshAccessToken)
 
 router
     .route("/logout")
