@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { editDoctorProfile, getDoctorById, getDoctors } from "../controller/doctor.controller.js";
+import { verifyJWT, verifyRole } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ router
 
 router
     .route("/profile")
-    .put(editDoctorProfile);
+    .put(verifyJWT, verifyRole("doctor"), editDoctorProfile);
 
 router
     .route("/:id")
