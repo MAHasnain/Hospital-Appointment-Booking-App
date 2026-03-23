@@ -9,10 +9,6 @@ const appointmentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Doctor"
     },
-    appointmentDate: {
-        type: Date,
-        required: true
-    },
     reason: {
         type: String,
         required: true,
@@ -28,13 +24,14 @@ const appointmentSchema = new Schema({
     },
     appointmentType: {
         type: String,
+        enum: ["Follow-up", "Consultation", "Check-up"]
     },
     status: {
         type: String,
-        enum: ["pending", "confirmed", "completed", "cancelled"]
+        enum: ["pending", "confirmed", "completed", "cancelled"],
+        default: "pending"
     },
-    
-});
+}, { timestamps: true });
 
 const Appointment = model("Appointment", appointmentSchema);
 
