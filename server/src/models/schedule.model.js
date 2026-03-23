@@ -6,12 +6,12 @@ const scheduleSchema = new Schema({
         ref: "Doctor"
     },
     availableSlots: {
-        type: String,
+        type: [String],
 
     },
     workingDays: {
         type: [String],
-
+        required: true
     },
     startTime: {
         type: String,
@@ -22,13 +22,12 @@ const scheduleSchema = new Schema({
         required: true
     },
     isActive: {
-        type: String
+        type: Boolean,
+        default: true
     },
     slotDuration: {
-        type: Number
-    },
-    breakDuration: {
-        type: Number
+        type: Number,
+        required: true
     }
 });
 

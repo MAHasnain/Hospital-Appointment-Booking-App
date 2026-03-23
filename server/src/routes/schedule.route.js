@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { createSchedule, editSchedule, getScheduleByDrId } from "../controller/schedule.controller.js";
+import { verifyJWT, verifyRole } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
 router
     .route("/")
-    .post(createSchedule)
+    .post(verifyJWT, verifyRole("doctor"), createSchedule)
 
 router
     .route("/:scheduleId")

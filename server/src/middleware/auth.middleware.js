@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import Patient from "../models/patient.model.js";
 import Doctor from "../models/doctor.model.js";
+import logger from "../../logger/winston.logger.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
@@ -39,3 +40,14 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
     }
 });
+
+export const verifyRole = (role) => {
+
+    return (req, res, next) => {
+        // logger.info("role access ");
+        if (req.user?.role !== role) {
+            throw new ApiError(403, "Unauthorized access");
+        }
+        next();
+    }
+};
