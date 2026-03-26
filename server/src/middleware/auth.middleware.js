@@ -45,6 +45,7 @@ export const verifyRole = (role) => {
 
     return (req, res, next) => {
         // logger.info("role access ");
+        console.log(req.user);
         if (req.user?.role !== role) {
             throw new ApiError(403, "Unauthorized access");
         }

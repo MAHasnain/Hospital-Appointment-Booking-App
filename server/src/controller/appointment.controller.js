@@ -92,29 +92,31 @@ const getMyAppointmentById = asyncHandler(async (req, res) => {
         );
 });
 
-// const getPatientAppointmentById = asyncHandler(async (req, res) => {
+const getPatientAppointmentById = asyncHandler(async (req, res) => {
 
-//     const { appointmentId } = req.params;
-//     const userId = req.user._id
-//     console.log(userId);
-//     const appointments = await Appointment.findOne({ _id: appointmentId, doctor: userId, });
+    const { appointmentId } = req.params;
+    const userId = req.user._id
+    console.log(userId);
+    const appointment = await Appointment.findOne({ _id: appointmentId, doctor: userId, });
 
-//     console.log(appointments);
+    console.log(appointment);
 
-//     return res
-//         .status(200)
-//         .json(
-//             new ApiResponse(
-//                 200,
-//                 appointments,
-//                 "Appointments fetched successfully."
-//             )
-//         );
-// });
+    return res
+        .status(200)
+        .json(  
+            new ApiResponse(
+                200,
+                appointment,
+                "Appointments fetched successfully."
+            )
+        );
+});
 
 const getPatientAppointments = asyncHandler(async (req, res) => {
     const doctorId = req.user._id;
+    const {role} = req.user;
     console.log(doctorId);
+    console.log(role);
 
     const appointments = await Appointment.find({ doctor: doctorId });
     console.log(appointments);
@@ -241,4 +243,4 @@ const deleteAppointment = asyncHandler(async (req, res) => {
         );
 });
 
-export { createAppointment, deleteAppointment, editAppointment, changeAppointmentStatus, getMyAppointmentById, getAllMyAppointments, getPatientAppointments };
+export { createAppointment, deleteAppointment, editAppointment, changeAppointmentStatus, getMyAppointmentById, getAllMyAppointments, getPatientAppointments, getPatientAppointmentById };
