@@ -74,6 +74,11 @@ const getMyAppointmentById = asyncHandler(async (req, res) => {
 
     const appointment = await Appointment.findOne({ _id: appointmentId, patient: patientId });
 
+    // validation
+    if (!appointment) {
+        throw new ApiError(403, "Appointment does not exist");
+    };
+
     console.log(appointment);
 
     return res
@@ -153,11 +158,87 @@ const changeAppointmentStatus = asyncHandler(async (req, res) => {
 
 const editAppointment = asyncHandler(async (req, res) => {
 
+    const { date, appointmentType, timeSlot, reason } = req.body;
+    const { _id } = req.user;
+    const { appointmentId } = req.params;
+    console.log(_id);
+
+    const appointment = await Appointment.findById(appointmentId);
+    console.log({ appointment });
+
+    // appointment existance
+    if (!appointment) {
+        throw new ApiError(404, "this appointment does'nt exist");
+    };
+
+    // validations  patient check
+    if (appointment.patient.toString() !== _id.toString()) {
+        throw new ApiError(403, "Unauthorized request");
+    };
+
+    const slotTaken = await Appointment.findOne({
+        doctor: appointment.doctor,
+        date,
+        timeSlot,
+        _id: { $ne: appointmentId }
+    });
+
+    // time slot check 
+    if (slotTaken) {
+        throw new ApiError(409, "this time slot is already booked");
+    };
+
+    // status check
+    if (appointment.status === "cancelled") {
+        throw new ApiError(403, "appointment has been cancelled");
+    } else if (appointment.status === "completed") {
+        throw new ApiError(403, "appointment has been completed");
+    };
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(appointmentId, { date, appointmentType, reason, timeSlot }, { new: true });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                updatedAppointment,
+                "Your appointment update successfully."
+            )
+        );
 });
 
 // appointment cancel 
 const deleteAppointment = asyncHandler(async (req, res) => {
 
+    // cancel appointment 
+    // patient 
+
+    const { appointmentId } = req.params;
+    console.log(appointmentId);
+
+    const appointment = await Appointment.findById(appointmentId);
+
+    // validations
+    if (!appointment) {
+        throw new ApiError(404, "Appointment is not exist");
+    };
+
+    if (appointment.patient.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Unauthorized request");
+    };
+
+    await appointment.deleteOne();
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {},
+                "Appointment cancel successfully."
+            )
+        );
 });
 
-export { createAppointment, deleteAppointment, editAppointment, changeAppointmentStatus, getMyAppointmentById, getPatientAppointmentById, getAllMyAppointments, getPatientAppointments };
+export { createAppointment, deleteAppointment, editAppointment, changeAppointmentStatus, getMyAppointmentById, getAllMyAppointments, getPatientAppointments };
