@@ -29,7 +29,7 @@ const scheduleSchema = new Schema({
         type: Number,
         required: true
     }
-});
+}, { timestamps: true });
 
 const Schedule = model("Schedule", scheduleSchema);
 

@@ -10,7 +10,7 @@ router
 
 router
     .route("/:scheduleId")
-    .put(editSchedule)
+    .put(verifyJWT, verifyRole("doctor"), editSchedule)
 // .delete(deleteSchedule)
 
 router   /// available slots
