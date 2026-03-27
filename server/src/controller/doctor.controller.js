@@ -21,13 +21,14 @@ const getDoctors = asyncHandler(async (req, res) => {
 
 const editDoctorProfile = asyncHandler(async (req, res) => {
 
-    const { fullName, phoneNumber, avatar, password, speciality } = req.body;
+    const { fullName, phoneNumber, password, speciality } = req.body;
     const doctorId = req.user._id;
+    const avatarFile = req.file
     const updateData = {};
 
     if (fullName) updateData.fullName = fullName;
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
-    if (avatar) updateData.avatar = avatar;
+    if (avatarFile) updateData.avatar = avatarFile;
     if (speciality) updateData.speciality = speciality;
     if (password) updateData.password = password;
 

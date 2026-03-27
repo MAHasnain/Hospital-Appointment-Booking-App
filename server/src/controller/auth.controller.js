@@ -42,13 +42,13 @@ const registerPatient = asyncHandler(async (req, res) => {
         throw new ApiError(409, "email and username already exist.");
     }
 
-    const avatarLocalPath = req.file?.path;
-    console.log(avatarLocalPath);
-    if (!avatarLocalPath) {
+    const avatarFile = req.file;
+    console.log(avatarFile);
+    if (!avatarFile) {
         throw new ApiError(400, "Avatar file is required.");
     }
 
-    const patientAvatar = await uploadOnCloudinary(avatarLocalPath);
+    const patientAvatar = await uploadOnCloudinary(avatarFile.buffer);
     console.log(patientAvatar);
     if (!patientAvatar) {
         throw new ApiError(400, "Avatar file is required.");
@@ -96,12 +96,12 @@ const registerDoctor = asyncHandler(async (req, res) => {
         throw new ApiError(409, "email is already exist.")
     };
 
-    const avatarLocalPath = req.file?.path;
-    if (!avatarLocalPath) {
+    const avatarFile = req.file;
+    if (!avatarFile) {
         throw new ApiError(400, "Avatar file is required.")
     };
 
-    const doctorAvatar = await uploadOnCloudinary(avatarLocalPath);
+    const doctorAvatar = await uploadOnCloudinary(avatarFile.buffer);
     if (!doctorAvatar) {
         throw new ApiError(400, "Avatar file is required.");
     };
@@ -375,8 +375,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const editPatientProfile = asyncHandler(async (req, res) => {
 
     console.log(req.body);
-    const { fullName, phoneNumber, avatar, dob, address, password } = req.body;
+    const { fullName, phoneNumber, dob, address, password } = req.body;
     const patientId = req.user._id;
+    const avatarFile = req.file
     console.log(fullName);
     console.log(patientId);
 
@@ -385,7 +386,7 @@ const editPatientProfile = asyncHandler(async (req, res) => {
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
     if (password) updateData.password = password;
     if (address) updateData.address = address;
-    if (avatar) updateData.avatar = avatar;
+    if (avatarFile) updateData.avatar = avatarFile;
     if (dob) updateData.dob = dob;
 
     const patient = await Patient.findByIdAndUpdate(patientId, updateData, { new: true, runValidators: true }).select("-password");
