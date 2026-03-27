@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
 
 
-const getDoctors = async (req, res) => {
+const getDoctors = asyncHandler(async (req, res) => {
 
     const doctors = await Doctor.find({}).select("-password -refreshToken")
     // logger.info({ doctors })
@@ -17,22 +17,45 @@ const getDoctors = async (req, res) => {
             "All Doctors fetched successfully."
         ));
 
-}
+})
 
-const editDoctorProfile = async (req, res) => {
+const editDoctorProfile = asyncHandler(async (req, res) => {
 
-    const {} = req.body;
-    
+    const { fullName, phoneNumber, avatar, password, speciality } = req.body;
+    const doctorId = req.user._id;
+    const updateData = {};
 
-}
+    if (fullName) updateData.fullName = fullName;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (avatar) updateData.avatar = avatar;
+    if (speciality) updateData.speciality = speciality;
+    if (password) updateData.password = password;
 
-const getDoctorById = async (req, res) => {
+    const doctor = await Doctor.findByIdAndUpdate(doctorId, updateData, { new: true, runValidators: true }).select("-password");
+
+    if (!doctor) {
+        throw new ApiError(404, "Doctor not found");
+        
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                doctor,
+                "Doctor profile updated successfully."
+            )
+        )
+})
+
+const getDoctorById = asyncHandler(async (req, res) => {
 
     const { id } = req.params;
     console.log(id);
 
     const doctor = await Doctor.findById(id).select("-password -refreshToken");
-    logger.info({doctor});
+    logger.info({ doctor });
 
     return res
         .status(200)
@@ -44,6 +67,6 @@ const getDoctorById = async (req, res) => {
             )
         )
 
-}
+})
 
 export { getDoctorById, editDoctorProfile, getDoctors };

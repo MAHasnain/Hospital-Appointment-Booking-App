@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { editDoctorProfile, getDoctorById, getDoctors } from "../controller/doctor.controller.js";
 import { verifyJWT, verifyRole } from "../middleware/auth.middleware.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router
 
 router
     .route("/profile")
-    .put(verifyJWT, verifyRole("doctor"), editDoctorProfile);
+    .put(verifyJWT, verifyRole("doctor"), upload.single("avatar"), editDoctorProfile);
 
 router
     .route("/:id")

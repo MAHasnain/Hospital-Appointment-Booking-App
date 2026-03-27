@@ -370,8 +370,37 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     }
 
+});
+
+const editPatientProfile = asyncHandler(async (req, res) => {
+
+    console.log(req.body);
+    const { fullName, phoneNumber, avatar, dob, address, password } = req.body;
+    const patientId = req.user._id;
+    console.log(fullName);
+    console.log(patientId);
+
+    const updateData = {};
+    if (fullName) updateData.fullName = fullName;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (password) updateData.password = password;
+    if (address) updateData.address = address;
+    if (avatar) updateData.avatar = avatar;
+    if (dob) updateData.dob = dob;
+
+    const patient = await Patient.findByIdAndUpdate(patientId, updateData, { new: true, runValidators: true }).select("-password");
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                patient,
+                "Patient profile updated successfully."
+            )
+        )
 })
 
 export {
-    registerPatient, registerDoctor, login, refreshAccessToken, logout
+    registerPatient, editPatientProfile, registerDoctor, login, refreshAccessToken, logout
 }
