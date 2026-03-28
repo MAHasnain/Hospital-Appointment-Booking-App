@@ -38,7 +38,7 @@ const format = winston.format.combine(
 
 // Define which transports the logger must use to print out messages.
 // In this example, we are using three different transports
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL;
 
 const transports = [
   // Allow the use the console to print the messages
