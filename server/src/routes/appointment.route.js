@@ -32,6 +32,6 @@ router
 
 router
     .route("/:appointmentId/status")
-    .put(verifyJWT, verifyRole("doctor"), changeAppointmentStatus)
+    .patch(verifyJWT, verifyRole("doctor"), changeAppointmentStatus)
 
 export default router;
