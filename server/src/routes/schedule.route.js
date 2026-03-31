@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createSchedule, editSchedule, getScheduleByDrId } from "../controller/schedule.controller.js";
+import { createSchedule, deleteSchedule, editSchedule, getScheduleByDrId } from "../controller/schedule.controller.js";
 import { verifyJWT, verifyRole } from "../middleware/auth.middleware.js";
 
 const router = Router();
@@ -11,7 +11,7 @@ router
 router
     .route("/:scheduleId")
     .put(verifyJWT, verifyRole("doctor"), editSchedule)
-// .delete(deleteSchedule)
+    .delete(verifyJWT, verifyRole("doctor"), deleteSchedule)
 
 router   /// available slots
     .route("/doctor/:doctorId")

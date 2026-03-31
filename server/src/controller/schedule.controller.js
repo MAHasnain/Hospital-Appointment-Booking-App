@@ -77,14 +77,62 @@ const createSchedule = asyncHandler(async (req, res) => {
 
 })
 
-// status chenge 
 const editSchedule = asyncHandler(async (req, res) => {
+    const { scheduleId } = req.params;
+    const { workingDays, startTime, endTime, slotDuration, isActive } = req.body;
 
-}
-)
+    if (!scheduleId) {
+        throw new ApiError(400, "Schedule ID is required");
+    };
+
+    const schedule = await Schedule.findById(scheduleId);
+
+    if (!schedule) {
+        throw new ApiError(404, "Schedule not found");
+    };
+
+    // Update schedule fields
+    schedule.workingDays = workingDays || schedule.workingDays;
+    schedule.startTime = startTime || schedule.startTime;
+    schedule.endTime = endTime || schedule.endTime;
+    schedule.slotDuration = slotDuration || schedule.slotDuration;
+    schedule.isActive = isActive !== undefined ? isActive : schedule.isActive;
+
+    await schedule.save({ validateBeforeSave: false }, { new: true });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, schedule, "Schedule edited successfully."));
+})
+
+const deleteSchedule = asyncHandler(async (req, res) => {
+
+    const { scheduleId } = req.params;
+    const schedule = await Schedule.findByIdAndDelete(scheduleId);
+
+    if (!schedule) {
+        throw new ApiError(404, "Schedule not found");
+    };
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, schedule, "Schedule deleted successfully."));
+})
 
 const getScheduleByDrId = asyncHandler(async (req, res) => {
 
+    const { doctorId } = req.params;
+
+    const schedule = await Schedule.findOne({ doctor: doctorId });
+
+    if (!schedule) {
+        throw new ApiError(404, "Schedule not found");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, schedule, "Schedule fetched successfully."));
+
 })
 
-export { createSchedule, editSchedule, getScheduleByDrId };
+export { createSchedule, editSchedule, getScheduleByDrId, deleteSchedule };
