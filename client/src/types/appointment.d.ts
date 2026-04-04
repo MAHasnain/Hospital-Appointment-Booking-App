@@ -57,11 +57,20 @@ export interface EditAppointmentPayload {
     reason?: string;
 }
 
-export interface AppointmentStore {
-    appointments: Appointment[];
-    createAppointment: (appointment: Appointment) => void;
-    updateAppointment: (appointment: Appointment) => void;
-    deleteAppointment: (appointmentId: string) => void;
-    setAllAppointments: (appointments: Appointment[]) => void;
-    getAppointmentById: (appointmentId: string) => Appointment | undefined;
+export interface AppointmentState {
+  appointments: Appointment[];
+  selectedAppointment: Appointment | null;
+  loading: boolean;
+  error: string | null;
+
+  createAppointment: (appointment: Appointment) => Promise<void>;
+  editAppointment: (_id: string, data: EditAppointmentPayload) => Promise<void>;
+  deleteAppointment: (appointmentId: string) => Promise<void>;
+  getAllMyAppointments: () => Promise<void>;
+  getAppointmentById: (id: string) => Promise<void>;
+  changeAppointmentStatus: (id: string) => Promise<void>;
+  getPatientAppointmentById: (id: string) => Promise<void>;
+  getPatientAppointments: () => Promise<void>;
+
+  setSelectedAppointment: (appointment: Appointment | null) => void;
 }
