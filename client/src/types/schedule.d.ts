@@ -10,6 +10,16 @@ export enum WeekDays {
     SUN = "sun",
 }
 
+export interface ScheduleStore {
+    schedule: Schedule | null;
+    loading: boolean;
+    error: string | null;
+    createSchedule: (schedule: CreateSchedulePayload) => Promise<void>;
+    editSchedule: (schedule: EditSchedulePayload) => Promise<void>;
+    deleteSchedule: (scheduleId: string) => Promise<void>;
+    getScheduleByDrId: (doctorId: string) => Promise<void>;
+}
+
 export interface Schedule extends BaseEntity {
     doctor: string;
     workingDays: WeekDays[];
