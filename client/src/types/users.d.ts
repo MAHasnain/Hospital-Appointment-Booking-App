@@ -1,78 +1,97 @@
 export enum UserRole {
- PATIENT = "patient",
- DOCTOR = "doctor",
+    PATIENT = "patient",
+    DOCTOR = "doctor",
 }
 
 export interface BaseEntity {
- _id: string;
- createdAt: string;
- updatedAt: string;
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Doctor extends BaseEntity {
- fullName: string;
- email: string;
- phoneNumber: string;
- avatar?: string;
- speciality: string;
- medicalLicense: string;
- role: UserRole.DOCTOR;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    avatar?: string;
+    speciality: string;
+    medicalLicense: string;
+    role: UserRole.DOCTOR;
 }
 
 export interface Patient extends BaseEntity {
- fullName: string;
- email: string;
- phoneNumber: string;
- avatar?: string;
- role: UserRole.PATIENT;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    avatar?: string;
+    role: UserRole.PATIENT;
 }
 
 // FORM PAYLOADS
 
 export interface RegisterDoctorPayload {
- fullName: string;
- email: string;
- password: string;
- phoneNumber: number;
- speciality: string;
- medicalLicense: string;
- professionalBio?: string;
- hospital?: string;
- experience?: number;
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: number;
+    speciality: string;
+    medicalLicense: string;
+    professionalBio?: string;
+    hospital?: string;
+    experience?: number;
 }
 
 export interface RegisterPatientPayload {
- fullName?: string;
- username: string;
- phoneNumber: number;
- email: string;
- dob?: string;
- address?: string;
- avatar?: string;
- emergencyContact?: string;
- password: string;
+    fullName?: string;
+    username: string;
+    phoneNumber: number;
+    email: string;
+    dob?: string;
+    address?: string;
+    avatar?: string;
+    emergencyContact?: string;
+    password: string;
+}
+
+export interface LoginUserPayload {
+    email: string;
+    password: string;
 }
 
 export interface editPatientProfilePayload {
- fullName?: string;
- username?: string;
- phoneNumber?: number;
- email?: string;
- dob?: string;
- address?: string;
- avatar?: string;
- emergencyContact?: string;
- password?: string;
+    fullName?: string;
+    username?: string;
+    phoneNumber?: number;
+    email?: string;
+    dob?: string;
+    address?: string;
+    avatar?: string;
+    emergencyContact?: string;
+    password?: string;
 }
 
 export interface editDoctorProfilePayload {
- fullName?: string;
- email?: string;
- password?: string;
- phoneNumber?: number;
- speciality?: string;
- medicalLicense?: string;
- professionalBio?: string;
- hospital?: string;
- experience?: number;
+    fullName?: string;
+    email?: string;
+    password?: string;
+    phoneNumber?: number;
+    speciality?: string;
+    medicalLicense?: string;
+    professionalBio?: string;
+    hospital?: string;
+    experience?: number;
+}
+
+export interface AuthStore {
+    user: Doctor | Patient | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+    login: (credentials: LoginUserPayload) => Promise<void>;
+    registerDoctor: (doctor: RegisterDoctorPayload) => Promise<void>;
+    registerPatient: (patient: RegisterPatientPayload) => Promise<void>;
+    refreshAccessToken: (accessToken: string) => Promise<void>;
+    logout: () => void;
+    setError: (error: string) => void;
+    clearError: () => void;
 }

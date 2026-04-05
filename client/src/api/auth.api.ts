@@ -2,9 +2,9 @@ import { RegisterDoctorPayload, RegisterPatientPayload } from "@/types/users";
 import apiClient from ".";
 import { editPatientProfilePayload } from "@/types/users";
 
-export const registerPatient = (data: RegisterPatientPayload) => apiClient.post("/", data)
-export const registerDoctor = (data: RegisterDoctorPayload) => apiClient.post("/", data)
-export const login = (data: { email: string; password: string }) => apiClient.post("/login", data)
-export const editPatientProfile = (data: editPatientProfilePayload) => apiClient.put("/profile", data)
-export const refreshAccessToken = (data: { refreshToken: string }) => apiClient.post("/refresh-token", data)
-export const logout = (data: { refreshToken: string }) => apiClient.post("/logout", data)
+export const registerPatientApi = (data: RegisterPatientPayload) => apiClient.post("/auth", data)
+export const registerDoctorApi = (data: RegisterDoctorPayload) => apiClient.post("/auth", data)
+export const loginApi = (data: { email: string; password: string }) => apiClient.post("/auth/login", data)
+export const editPatientProfileApi = (data: editPatientProfilePayload) => apiClient.put("/auth/profile", data)
+export const refreshAccessTokenApi = () => apiClient.post("/auth/refresh-token")
+export const logoutApi = () => apiClient.post("/auth/logout")
