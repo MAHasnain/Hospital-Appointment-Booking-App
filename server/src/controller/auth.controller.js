@@ -227,7 +227,9 @@ const login = asyncHandler(async (req, res) => {
         }
 
         const options = {
-            httpOnly: true
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
         }
 
         return res
@@ -249,7 +251,9 @@ const login = asyncHandler(async (req, res) => {
         }
 
         const options = {
-            httpOnly: true
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
         }
 
         return res
@@ -275,7 +279,11 @@ const logout = asyncHandler(async (req, res) => {
         }
     }, { new: true });
 
-    const options = { httpOnly: true }
+    const options = { 
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    }
 
     res
         .status(200)
@@ -308,7 +316,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 throw new ApiError(401, "Refresh token is expired or used");
             };
 
-            const options = { httpOnly: true };
+            const options = { 
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            };
 
             // tokens generating
             const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshToken(user._id, user.role);
@@ -341,7 +353,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 throw new ApiError(401, "Refresh token is expired or used");
             };
 
-            const options = { httpOnly: true };
+            const options = { 
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            };
 
             // tokens generating
             const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshToken(user._id, user.role);
