@@ -228,8 +228,8 @@ const login = asyncHandler(async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
-            sameSite: "none"
+            secure: false,
+            sameSite: "lax"
         }
 
         return res
@@ -252,8 +252,8 @@ const login = asyncHandler(async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
-            sameSite: "none"
+            secure: false,
+            sameSite: "lax"
         }
 
         return res
@@ -281,8 +281,8 @@ const logout = asyncHandler(async (req, res) => {
 
     const options = { 
         httpOnly: true,
-        secure: true,
-        sameSite: "none"
+        secure: false,
+        sameSite: "lax"
     }
 
     res
@@ -318,8 +318,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
             const options = { 
                 httpOnly: true,
-                secure: true,
-                sameSite: "none"
+                secure: false,
+                sameSite: "lax"
             };
 
             // tokens generating
@@ -355,8 +355,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
             const options = { 
                 httpOnly: true,
-                secure: true,
-                sameSite: "none"
+                secure: false,
+                sameSite: "lax"
             };
 
             // tokens generating
